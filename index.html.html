@@ -1,0 +1,347 @@
+<div id="zakat-expert-wrapper" style="width: 100%; max-width: 900px; margin: 0 auto; position: relative; text-align: left; background-color: #010714; color: #f1f5f9; border-radius: 2.5rem; border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); overflow: hidden; font-family: 'IBM Plex Sans Thai', sans-serif;">
+    
+    <!-- ทรัพยากรภายนอก -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeUp 0.5s ease-out forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active-gold { background: linear-gradient(to bottom right, #eab308, #fde047) !important; color: #1e3a8a !important; }
+        .active-red { background: linear-gradient(to bottom right, #dc2626, #f87171) !important; color: white !important; }
+        .active-blue { background: linear-gradient(to bottom right, #3b82f6, #93c5fd) !important; color: #1e3a8a !important; }
+        .shadow-glow { box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+
+    <div class="space-y-6">
+        <!-- Header -->
+        <header class="flex items-center justify-between bg-slate-900/50 p-4 rounded-3xl border border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-500 p-2 rounded-xl shadow-lg"><i class="ph-fill ph-coins text-blue-950 text-xl"></i></div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-black text-white leading-none">Zakat Expert <span style="color:#f59e0b; font-family: 'Inter', sans-serif; font-weight: 900;">Version 1</span></h1>
+                    <p class="text-[10px] text-amber-500 uppercase font-bold tracking-widest mt-1">By Daol-islamic</p>
+                </div>
+            </div>
+            <div id="zakat-status-badge" class="bg-slate-800 px-3 py-1.5 rounded-lg border border-white/10 text-[10px] font-black uppercase tracking-widest text-white">
+                Shariah Principles
+            </div>
+        </header>
+
+        <!-- Author Section -->
+        <div class="bg-blue-950/20 p-6 rounded-3xl border border-white/5 relative">
+            <p class="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Zakat expert by Daol-islamic</p>
+            <h2 class="text-xl font-bold text-white">จัดทำโดย <span class="text-amber-400 italic">อ.อิสเรศ มะหะหมัด</span></h2>
+            <div class="mt-1 font-bold text-slate-300">
+                <p class="text-sm">ผู้เชี่ยวชาญด้านการเงินอิสลาม หัวหน้าฝ่าย Daol-islamic</p>
+                <p class="text-xs text-slate-400">รองกรรมการผู้จัดการ บล. ดาโอ (ประเทศไทย) จำกัด (มหาชน)</p>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="bg-gradient-to-br from-blue-950 to-slate-900 p-8 rounded-[2.5rem] border border-amber-500/20 shadow-xl relative overflow-hidden">
+            <div class="relative z-10 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-center sm:items-start gap-4 text-center sm:text-left">
+                    <div class="w-full">
+                        <p class="text-sm font-bold text-amber-500 uppercase tracking-widest mb-1">ความมั่งคั่งสุทธิของท่าน</p>
+                        <h2 id="display-net-wealth" class="text-5xl sm:text-7xl font-black text-white tracking-tighter" style="font-family: 'Inter', sans-serif;">฿0</h2>
+                    </div>
+                    <div class="bg-amber-500 text-blue-950 px-5 py-2 rounded-2xl shadow-lg shrink-0 text-center">
+                        <p class="text-[10px] font-bold uppercase">Year</p>
+                        <p id="display-current-year" class="text-lg font-bold">2026</p>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex flex-wrap justify-between text-[12px] sm:text-sm font-bold uppercase text-slate-400">
+                        <span><i class="ph-bold ph-plus-circle text-blue-400"></i> ทรัพย์สิน: <span id="display-total-assets" class="text-blue-400">฿0</span></span>
+                        <span><i class="ph-bold ph-minus-circle text-rose-400"></i> หนี้สิน: <span id="display-total-debts" class="text-rose-400">฿0</span></span>
+                    </div>
+                    <div class="h-4 w-full bg-black/40 rounded-full border border-white/10 p-1 overflow-hidden shadow-inner">
+                        <div id="nisab-progress-bar" class="h-full bg-blue-600 w-0 transition-all duration-1000 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <nav id="zakat-nav-bar" class="flex overflow-x-auto gap-2 p-1.5 bg-slate-900/80 rounded-2xl border border-white/10 hide-scrollbar font-bold">
+            <button onclick="window.switchTab('guide')" id="btn-guide" class="flex-1 min-w-[105px] py-3 rounded-xl text-[11px] uppercase tracking-wider bg-blue-500 text-blue-950 active-blue">คู่มือ</button>
+            <button onclick="window.switchTab('settings')" id="btn-settings" class="flex-1 min-w-[105px] py-3 rounded-xl text-[11px] uppercase tracking-wider text-slate-400">ตั้งค่านิศอบ</button>
+            <button onclick="window.switchTab('assets')" id="btn-assets" class="flex-1 min-w-[105px] py-3 rounded-xl text-[11px] uppercase tracking-wider text-slate-400">ทรัพย์สิน</button>
+            <button onclick="window.switchTab('debts')" id="btn-debts" class="flex-1 min-w-[105px] py-3 rounded-xl text-[11px] uppercase tracking-wider text-slate-400">หนี้สิน</button>
+            <button onclick="window.switchTab('asnaf')" id="btn-asnaf" class="flex-1 min-w-[105px] py-3 rounded-xl text-[11px] uppercase tracking-wider text-slate-400">ผู้มีสิทธิ์รับซะกาต</button>
+        </nav>
+
+        <div id="content-container" class="min-h-[500px]">
+            <!-- Tab: แนวทางการใช้งาน -->
+            <div id="tab-guide" class="tab-content active space-y-8 font-bold">
+                <div class="bg-gradient-to-br from-blue-900/30 to-slate-900 border border-blue-500/20 rounded-[2.5rem] p-6 sm:p-10 space-y-8 shadow-xl">
+                    <div class="flex items-center gap-3 text-blue-400 font-bold text-xs uppercase tracking-widest">
+                        <i class="ph-fill ph-bookmark-simple text-2xl"></i>
+                        <span class="text-base sm:text-xl font-bold">แนวทางการใช้งานและหลักการศาสนา</span>
+                    </div>
+                    <div class="grid gap-6">
+                        <div class="flex gap-4 items-start"><div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-400 font-black">1</div><div class="space-y-1"><h4 class="text-base font-bold text-white leading-tight">ตั้งค่านิศอบ</h4><p class="text-sm text-slate-300 font-normal">เลือกนิศอบที่ท่านต้องการใช้ และกรอกราคาตลาดปัจจุบันเพื่อกำหนดพิกัดเริ่มต้น</p></div></div>
+                        <div class="flex gap-4 items-start"><div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-400 font-black">2</div><div class="space-y-1"><h4 class="text-base font-bold text-white leading-tight">สำรวจทรัพย์สิน</h4><p class="text-sm text-slate-300 font-normal">ตรวจสอบยอดเงินสด เงินฝาก หุ้น กองทุน และทองคำ</p></div></div>
+                        <div class="flex gap-4 items-start"><div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-400 font-black">3</div><div class="space-y-1"><h4 class="text-base font-bold text-white leading-tight">คำนวณหนี้สินและสุทธิ</h4><p class="text-sm text-slate-300 font-normal">ระบุหนี้ที่ต้องจ่ายจริงในปีนี้ เพื่อหาส่วนเกินที่พ้นภาระ</p></div></div>
+                        <div class="flex gap-4 items-start"><div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 text-amber-400 font-black">4</div><div class="space-y-1"><h4 class="text-base font-bold text-white leading-tight">ชำระซะกาต</h4><p class="text-sm text-slate-300 font-normal">หากถึงพิกัดและครบ 1 ปีจันทรคติ ให้ชำระ 2.5%</p></div></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 p-6 sm:p-8 rounded-3xl border border-white/5 space-y-6">
+                    <h4 class="text-xl font-bold text-blue-400 flex items-center gap-2.5"><i class="ph-fill ph-scales text-3xl"></i> ความมั่งคั่งสุทธิ (Net Wealth)</h4>
+                    <p class="text-sm text-slate-200">นักวิชาการร่วมสมัย (อาทิ ดร.ยูซุฟ อัล-กอรฎอวีย์) และองค์กรสากลอย่าง AAOIFI รวมถึงสภาฟัตวา MUIS เลือกใช้เกณฑ์นี้เพื่อให้แน่ใจว่าทรัพย์สิน "พ้นความจำเป็นพื้นฐาน" (Al-Afw) อย่างแท้จริง</p>
+                    <div class="h-px bg-white/10 my-4"></div>
+                    <p class="text-sm italic text-slate-100 font-bold">"...และพวกเขาจะถามเจ้าว่า พวกเขาจะบริจาคสิ่งใด? จงกล่าวเถิดว่า คือสิ่งที่เป็นส่วนเกิน (ที่เหลือจากการใช้สอย)" (อัลบะเกาะเราะฮ์: 219)</p>
+                    <p class="text-sm text-slate-100 font-bold">"ไม่มีการบริจาคใดๆ เว้นแต่ต้องมาจากความร่ำรวย (ความมั่งคั่งที่เหลือจากความจำเป็น)" (ฮะดิษบันทึกโดย อัลบุคอรี)</p>
+                </div>
+            </div>
+
+            <!-- Tab: Settings -->
+            <div id="tab-settings" class="tab-content space-y-6 font-bold">
+                <div class="bg-slate-900/40 p-6 sm:p-10 rounded-[2.5rem] border border-amber-500/20 shadow-2xl space-y-10">
+                    <div>
+                        <label class="text-lg font-bold text-amber-500 uppercase tracking-widest block ml-4">การตั้งค่านิศอบ</label>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <button onclick="window.setNisab('gold')" id="nisab-gold-btn" class="p-6 rounded-2xl border-2 border-amber-500 bg-amber-500/10 text-amber-400 shadow-md">
+                                <i class="ph-fill ph-coins text-3xl mb-2"></i>
+                                <p class="text-xs font-bold uppercase">นิศอบทองคำ</p>
+                                <p id="nisab-gold-val" class="text-lg font-black font-sans text-white">฿0</p>
+                            </button>
+                            <button onclick="window.setNisab('silver')" id="nisab-silver-btn" class="p-6 rounded-2xl border-2 border-white/5 bg-slate-950 text-slate-500">
+                                <i class="ph-fill ph-record text-3xl mb-2"></i>
+                                <p class="text-xs font-bold uppercase">นิศอบเงิน</p>
+                                <p id="nisab-silver-val" class="text-lg font-black font-sans text-white">฿0</p>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="evidence-gold" class="bg-amber-950/20 p-6 rounded-3xl border border-amber-500/20 space-y-3">
+                        <h5 class="text-amber-400 font-bold flex items-center gap-2"><i class="ph-bold ph-book-open"></i> หลักฐานนิศอบทองคำ</h5>
+                        <p class="text-sm text-slate-200 italic font-medium leading-relaxed">"เมื่อเจ้ามีทองคำครบยี่สิบดีนาร์ (เทียบเท่า 85 กรัม) และครบรอบหนึ่งปี เจ้าต้องจ่ายซะกาต 2.5%"</p>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">สายรายงานโดย: ท่านอะลี บิน อบีฏอลิบ (บันทึกโดย อะบูดาวูด)</p>
+                    </div>
+                    <div id="evidence-silver" class="bg-blue-950/20 p-6 rounded-3xl border border-blue-500/20 space-y-3" style="display:none;">
+                        <h5 class="text-blue-400 font-bold flex items-center gap-2"><i class="ph-bold ph-book-open"></i> หลักฐานนิศอบแร่เงิน</h5>
+                        <p class="text-sm text-slate-200 italic font-medium leading-relaxed">"ไม่มีการจ่ายซะกาตในแร่เงินที่น้อยกว่า 5 อะวาก (เทียบเท่า 595 กรัม)"</p>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">สายรายงานโดย: ท่านอบูสะอีด อัลคุดรีย์ (บันทึกโดย อัล-บุคอรีย์ และมุสลิม)</p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-8">
+                        <div>
+                            <label class="text-sm text-white block mb-2 font-bold">ราคาทองคำแท่ง (1 บาททอง)</label>
+                            <a href="https://classic.goldtraders.or.th/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-[10px] font-bold text-amber-400 hover:text-amber-300 mb-2">ตรวจสอบราคาทองแท่งขายออกล่าสุด</a>
+                            <input type="number" id="inp-gold-price" value="76450" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950 border border-white/10 rounded-xl p-4 text-2xl font-bold text-white focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="text-sm text-white block mb-2 font-bold">ราคาเงินวันนี้ (1 กรัม)</label>
+                            <a href="https://goldrate.com/th/silver/thailand" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-[10px] font-bold text-blue-400 hover:text-blue-300 mb-2">ตรวจสอบราคาเงิน 999/G ล่าสุด</a>
+                            <input type="number" id="inp-silver-price" value="81.78" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950 border border-white/10 rounded-xl p-4 text-2xl font-bold text-white focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Assets -->
+            <div id="tab-assets" class="tab-content space-y-8 font-bold">
+                <div class="grid gap-6">
+                    <div class="flex items-center gap-3 px-4 text-yellow-500">
+                        <i class="ph-fill ph-plus-circle text-2xl"></i>
+                        <span class="text-base sm:text-lg font-bold uppercase tracking-widest">ทรัพย์สิน (เงินสดและรายการเทียบเท่า)</span>
+                    </div>
+                    <div class="bg-slate-900/60 border-2 border-white/5 rounded-[2rem] p-6 space-y-6">
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">เงินสดในมือ (THB)</label>
+                            <input type="number" id="asset-cash" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-4 text-3xl font-black text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">เงินฝากธนาคาร (THB)</label>
+                            <input type="number" id="asset-bank" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-4 text-3xl font-black text-white">
+                            <p class="text-[11px] text-slate-500 mt-1">ยอดคงเหลือในบัญชีธนาคาร (ไม่รวมดอกเบี้ย) ที่ครบรอบปี หรือที่ต้องการคำนวณซะกาต</p>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">มูลค่าพอร์ตหุ้น (THB)</label>
+                            <input type="number" id="asset-stocks" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-4 text-3xl font-black text-white">
+                            <p class="text-[11px] text-slate-500 mt-1">มูลค่าต่ำสุดของพอร์ตหุ้นที่ซื้อมาขายไป หรือหากไม่ได้บันทึกไว้ให้ใช้มูลค่าตลาดปัจจุบันของพอร์ตหุ้น (ราคาปัจจุบัน) ไม่รวมพอร์ตหุ้นระยะยาว</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-slate-900 to-[#020a1c] p-6 sm:p-8 rounded-[2.5rem] border border-white/5 space-y-6">
+                    <div class="text-yellow-500 font-bold flex items-center gap-2"><i class="ph-fill ph-diamond"></i> หมวดทองคำเพื่อการลงทุน</div>
+                    <div>
+                        <label class="text-xs text-slate-400 block font-bold">ทองคำแท่ง (บาททอง)</label>
+                        <input type="number" id="asset-gold-bullion" placeholder="0.00" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-6 text-4xl font-black text-yellow-400 text-center">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block font-bold">ทองรูปพรรณส่วนเกิน (บาททอง)</label>
+                        <input type="number" id="asset-gold-jewelry" placeholder="0.00" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-6 text-4xl font-black text-yellow-400 text-center">
+                    </div>
+                </div>
+                <div class="p-4 bg-slate-900/60 rounded-3xl border border-white/5 space-y-6">
+                    <label class="text-[10px] text-emerald-400 uppercase tracking-widest block font-bold">สินทรัพย์สภาพคล่องสูงอื่นๆ (THB)</label>
+                    <div>
+                        <label class="text-[11px] text-slate-400 block mb-1">กบข./ประกัน/PVD (ที่ครบกำหนดและจะเอาเงินออกมาในปีนี้)</label>
+                        <input type="number" id="asset-maturing" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-4 text-2xl font-black text-white outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-slate-400 block mb-1">กองทุน SSF/THAIESG/RMF (ที่ครบกำหนดและจะเอาเงินออกมาในปีนี้)</label>
+                        <input type="number" id="asset-funds-matured" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-4 text-2xl font-black text-white outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-slate-400 block mb-1">ทรัพย์สินสภาพคล่องสูงอื่นๆ</label>
+                        <input type="number" id="asset-liquid" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-4 text-2xl font-black text-white">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Debts -->
+            <div id="tab-debts" class="tab-content space-y-8 font-bold">
+                <div class="flex items-center gap-3 px-4 text-red-500">
+                    <i class="ph-fill ph-minus-circle text-2xl"></i>
+                    <span class="text-base sm:text-lg font-bold uppercase tracking-widest">หนี้สินระยะสั้น (หักลบเฉพาะที่จ่ายในปีนี้)</span>
+                </div>
+                <div class="bg-slate-900/60 border-2 border-white/5 rounded-[2rem] p-6 space-y-6">
+                    <div><label class="text-xs text-slate-400 block mb-1">ค่างวดผ่อนรถ (THB)</label><input type="number" id="debt-car" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-5 text-3xl font-black text-rose-400"></div>
+                    <div><label class="text-xs text-slate-400 block mb-1">ค่าผ่อนบ้าน (THB)</label><input type="number" id="debt-house" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-5 text-3xl font-black text-rose-400"></div>
+                    <div><label class="text-xs text-slate-400 block mb-1">หนี้บัตรเครดิต (THB)</label><input type="number" id="debt-credit-card" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-5 text-3xl font-black text-rose-400"></div>
+                    <div><label class="text-xs text-slate-400 block mb-1">หนี้สินระยะสั้นอื่นๆ (THB)</label><input type="number" id="debt-other-short" placeholder="0" oninput="window.calculateAll()" onwheel="this.blur()" class="w-full bg-slate-950/50 border border-white/5 rounded-2xl p-5 text-3xl font-black text-rose-400"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Asnaf -->
+            <div id="tab-asnaf" class="tab-content space-y-6">
+                <div class="grid sm:grid-cols-2 gap-4 font-bold text-xs">
+                    <div class="p-4 bg-slate-950/50 rounded-2xl border border-white/5"><h5 class="text-amber-500 mb-1">1. ฟะกีร (Fakir)</h5><p class="text-slate-400">ผู้ที่ไม่มีทรัพย์สินและงานทำ มีรายได้ไม่ถึงครึ่งของความต้องการพื้นฐาน</p></div>
+                    <div class="p-4 bg-slate-950/50 rounded-2xl border border-white/5 font-bold"><h5 class="text-amber-500 mb-1">2. มิสกิน (Miskin)</h5><p class="text-slate-400">ผู้ที่มีงานทำแต่รายได้ไม่พอกับค่าใช้จ่ายที่จำเป็นในการดำรงชีวิต</p></div>
+                    <div class="p-4 bg-slate-950/50 rounded-2xl border border-white/5 font-bold"><h5 class="text-amber-500 mb-1">3. อามิล (Amil)</h5><p class="text-slate-400">เจ้าหน้าที่รวบรวมและจัดสรรซะกาต</p></div>
+                    <div class="p-4 bg-slate-950/50 rounded-2xl border border-white/5 font-bold"><h5 class="text-amber-500 mb-1">4. มุอัลลัฟ (Muallaf)</h5><p class="text-slate-400">ผู้ที่เพิ่งเข้ารับอิสลามหรือต้องการสร้างความสมานฉันท์</p></div>
+                    <div class="p-4 bg-slate-950/50 rounded-2xl border border-white/5 font-bold"><h5 class="text-amber-500 mb-1">5. ริกอบ (Riqab)</h5><p class="text-slate-400">การช่วยเหลือเพื่อปลดปล่อยทาส หรือส่งเสริมอิสรภาพ</p></div>
+                    <div class="p-4 bg-slate-950/50 rounded-2xl border border-white/5 font-bold"><h5 class="text-amber-500 mb-1">6. ฆอริม (Gharimin)</h5><p class="text-slate-400">ผู้มีหนี้สินล้นตัวจากการใช้จ่ายในสิ่งจำเป็น</p></div>
+                    <div class="p-4 bg-slate-950/50 rounded-2xl border border-white/5 font-bold"><h5 class="text-amber-500 mb-1">7. ฟีสะบีลิลลาฮ์</h5><p class="text-slate-400">ผู้ทำงานหรือต่อสู้ในหนทางของอัลลอฮ์ เพื่อสังคม</p></div>
+                    <div class="p-4 bg-slate-950/50 rounded-2xl border border-white/5 font-bold"><h5 class="text-amber-500 mb-1">8. อิบนุสสะบีล</h5><p class="text-slate-400">ผู้เดินทางที่ติดขัดในต่างถิ่นและขาดแคลนทุนทรัพย์</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sticky Footer Summary -->
+        <div class="sticky bottom-4 z-50 pt-4 font-bold">
+            <div id="result-card" class="bg-slate-900/95 backdrop-blur-xl border-2 border-white/10 p-6 rounded-[2.2rem] shadow-2xl flex items-center justify-between">
+                <div>
+                    <p id="result-label" class="text-xs uppercase tracking-widest text-slate-400 mb-1">ซะกาตที่ต้องชำระ (2.5%)</p>
+                    <h3 id="display-zakat" class="text-4xl sm:text-5xl font-black text-amber-500 tracking-tighter" style="font-family: 'Inter', sans-serif;">฿0</h3>
+                </div>
+                <div id="result-indicator" class="text-right font-bold">
+                    <p class="text-[10px] text-slate-400 leading-tight">กรุณากรอกข้อมูล<br>เพื่อคำนวณซะกาต</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Promo Section (Bottom) -->
+        <div class="bg-gradient-to-r from-blue-900/40 to-amber-900/40 p-6 rounded-3xl border border-white/10 mt-8 text-center space-y-4 shadow-xl">
+            <p class="text-sm sm:text-base font-bold text-white leading-relaxed">
+                คอร์สฟรี ไขรหัสทำกำไรหุ้นฮาลาล กองทุนฮาลาล เทรดทองคำ ทำกำไรอย่างยั่งยืน <br class="hidden sm:block">
+                <span class="text-amber-400 font-black">BY Daol-islamic / สำนักจุฬาราชมนตรี</span>
+            </p>
+            <a href="https://m.me/DAOL.islamic" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-blue-950 font-black py-3 px-8 rounded-2xl transition-all transform hover:scale-105 shadow-lg no-underline">
+                <i class="ph-bold ph-messenger-logo text-lg"></i>
+                เข้าเรียนฟรีที่นี่
+            </a>
+        </div>
+        
+        <footer class="text-center text-[10px] text-slate-600 pt-8 font-bold">&copy; 2026 Daol-islamic - All Rights Reserved.</footer>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        window.currentNisabType = 'gold';
+        var GOLD_BAHT_G = 15.244;
+        var NISAB_GOLD_G = 85;
+        var NISAB_SILVER_G = 595;
+
+        window.switchTab = function(id) {
+            var contents = document.querySelectorAll('.tab-content');
+            for(var i=0; i<contents.length; i++) contents[i].classList.remove('active');
+            var buttons = document.querySelectorAll('#zakat-nav-bar button');
+            for(var j=0; j<buttons.length; j++) {
+                buttons[j].classList.remove('active-blue', 'active-gold', 'active-red', 'bg-blue-500', 'text-blue-950', 'text-white');
+                buttons[j].classList.add('text-slate-400');
+            }
+            var target = document.getElementById('tab-' + id);
+            if(target) target.classList.add('active');
+            var btn = document.getElementById('btn-' + id);
+            if(btn) {
+                btn.classList.remove('text-slate-400');
+                if (id === 'assets') btn.classList.add('active-gold');
+                else if (id === 'debts') btn.classList.add('active-red');
+                else btn.classList.add('active-blue');
+            }
+        };
+
+        window.setNisab = function(type) {
+            window.currentNisabType = type;
+            var goldBtn = document.getElementById('nisab-gold-btn');
+            var silverBtn = document.getElementById('nisab-silver-btn');
+            if(type === 'gold') {
+                goldBtn.className = "p-6 rounded-2xl border-2 transition-all border-amber-500 bg-amber-500/10 text-amber-400 shadow-md font-bold";
+                silverBtn.className = "p-6 rounded-2xl border-2 transition-all border-white/5 bg-slate-950 text-slate-500 font-bold";
+                document.getElementById('evidence-gold').style.display = 'block';
+                document.getElementById('evidence-silver').style.display = 'none';
+            } else {
+                goldBtn.className = "p-6 rounded-2xl border-2 transition-all border-white/5 bg-slate-950 text-slate-500 font-bold";
+                silverBtn.className = "p-6 rounded-2xl border-2 transition-all border-blue-400 bg-blue-400/10 text-blue-400 shadow-md font-bold";
+                document.getElementById('evidence-gold').style.display = 'none';
+                document.getElementById('evidence-silver').style.display = 'block';
+            }
+            window.calculateAll();
+        };
+
+        window.calculateAll = function() {
+            var getVal = function(id) {
+                var el = document.getElementById(id);
+                return el ? (Number(el.value) || 0) : 0;
+            };
+            var gPrice = getVal('inp-gold-price') || 76450;
+            var sPrice = getVal('inp-silver-price') || 81.78;
+            var nisabGold = (gPrice / GOLD_BAHT_G) * NISAB_GOLD_G;
+            var nisabSilver = sPrice * NISAB_SILVER_G;
+            if(document.getElementById('nisab-gold-val')) document.getElementById('nisab-gold-val').innerText = '฿' + Math.floor(nisabGold).toLocaleString();
+            if(document.getElementById('nisab-silver-val')) document.getElementById('nisab-silver-val').innerText = '฿' + Math.floor(nisabSilver).toLocaleString();
+            var threshold = window.currentNisabType === 'gold' ? nisabGold : nisabSilver;
+            var assets = getVal('asset-cash') + getVal('asset-bank') + getVal('asset-stocks') + getVal('asset-maturing') + getVal('asset-funds-matured') + (getVal('asset-gold-bullion') * gPrice) + (getVal('asset-gold-jewelry') * gPrice) + getVal('asset-liquid');
+            var debts = getVal('debt-car') + getVal('debt-house') + getVal('debt-credit-card') + getVal('debt-other-short');
+            var net = Math.max(0, assets - debts);
+            var eligible = net >= threshold;
+            var zakat = eligible ? net * 0.025 : 0;
+            if(document.getElementById('display-net-wealth')) document.getElementById('display-net-wealth').innerText = '฿' + Math.floor(net).toLocaleString();
+            if(document.getElementById('display-total-assets')) document.getElementById('display-total-assets').innerText = '฿' + Math.floor(assets).toLocaleString();
+            if(document.getElementById('display-total-debts')) document.getElementById('display-total-debts').innerText = '฿' + Math.floor(debts).toLocaleString();
+            if(document.getElementById('display-zakat')) document.getElementById('display-zakat').innerText = '฿' + Math.floor(zakat).toLocaleString();
+            var bar = document.getElementById('nisab-progress-bar');
+            if(bar) {
+                bar.style.width = Math.min(100, (net / threshold) * 100) + '%';
+                bar.className = "h-full rounded-full transition-all duration-1000 " + (eligible ? "bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 shadow-glow" : "bg-blue-600");
+            }
+            var card = document.getElementById('result-card');
+            var ind = document.getElementById('result-indicator');
+            var label = document.getElementById('result-label');
+            var dz = document.getElementById('display-zakat');
+            if (eligible) {
+                if(card) card.className = "bg-amber-500 border-white/20 p-6 rounded-[2.2rem] shadow-2xl flex items-center justify-between transform scale-105";
+                if(label) label.className = "text-xs uppercase tracking-widest text-blue-950 font-black mb-1";
+                if(dz) dz.className = "text-4xl sm:text-5xl font-black text-blue-900 tracking-tighter";
+                if(ind) ind.innerHTML = '<div class="bg-blue-900/20 p-2 rounded-xl text-blue-900 flex flex-col items-center animate-pulse font-bold"><i class="ph-fill ph-check-circle text-2xl font-bold"></i><span class="text-[8px] font-black uppercase mt-1">วาญิบจ่าย</span></div>';
+            } else {
+                if(card) card.className = "bg-slate-900/95 backdrop-blur-xl border-2 border-white/10 p-6 rounded-[2.2rem] shadow-2xl flex items-center justify-between";
+                if(label) label.className = "text-xs uppercase tracking-widest text-slate-400 mb-1 font-bold";
+                if(dz) dz.className = "text-4xl sm:text-5xl font-black text-amber-500 tracking-tighter";
+                var lack = Math.ceil(threshold - net);
+                if(ind) ind.innerHTML = '<p class="text-[10px] text-slate-400 leading-tight font-bold">ขาดอีก <span class="text-amber-500 font-bold">฿' + lack.toLocaleString() + '</span><br>จะถึงพิกัดนิศอบ</p>';
+            }
+        };
+
+        window.onload = function() { window.calculateAll(); };
+    </script>
+</div>
